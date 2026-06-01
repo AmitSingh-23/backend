@@ -1,12 +1,15 @@
-import mongoose from 'mongoose';
-import { DB_NAME } from './constant';
-import express from 'express';
-const app = express();
+import dotenv from 'dotenv';
 
-;(async () => {
+
+import mongooseconnect from './db/index.js';
+dotenv.config({ path: './.env' });
+
+mongooseconnect();
+
+/*;(async () => {
   try {
-    await mongoose.connect(`${process.env.MONGO_URI}/${DB_NAME}`);
-    console.log("connected to database");
+    const apple=await mongoose.connect(`${process.env.MONGO_URL}/${DB_NAME}`);
+    console.log("connected to database",apple.connection.name);
     app.on("error",(err)=>{
         console.error("error",err)
         throw err;
@@ -21,5 +24,6 @@ const app = express();
     console.error("error",err)
     throw err;
   } 
-})()
+})();
+*/
    
