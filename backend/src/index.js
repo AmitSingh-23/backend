@@ -4,7 +4,18 @@ import dotenv from 'dotenv';
 import mongooseconnect from './db/index.js';
 dotenv.config({ path: './.env' });
 
-mongooseconnect();
+mongooseconnect()
+.then(()=>{
+  app.listen(process.env.PORT||4000,()=>{
+    console.log(`server is running on port ${process.env.PORT||4000}`);
+  })
+
+
+})
+.catch((err) => {
+  console.log("error in database connection", err);
+})
+
 
 /*;(async () => {
   try {
