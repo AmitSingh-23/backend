@@ -1,4 +1,6 @@
 import { SchemaType } from "mongoose";
+import bycrypt from "bcrypt";
+import { jwtDecode } from "jwt-decode";
 import mongoose from mongoose;
 const userSchema = new mongoose.Schema({
     username:{
