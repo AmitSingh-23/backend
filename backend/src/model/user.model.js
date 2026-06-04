@@ -48,9 +48,18 @@ const userSchema = new mongoose.Schema({
     refreshtoken:{
         typr:string,
     }
+},{timestamps:true});
+
+userschema.pre("save",async function(next){
+    if(!this.isModified("password")) return next;
+    this.password=await bycrypt.hash(this.password,10)
+    next();
 })
 
 
+user.schema.methods.isPassword=async function(password){
+    return await bycrypt.compare(password,this.password);
+}
 
 
 export const user=mongoose.model("usser",userSchema);
