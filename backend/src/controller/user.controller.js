@@ -19,16 +19,18 @@ const registerUser=asyncHandler(async(req,res)=>{
     if(existingUser){
         throw new ApiError(409,"User already exist");
     }
-    const avatarLocalPath=req.files?.avatar[0].path
-    const coverImageLocalPath=req.files?.coverImage[0]?.path
+    const avatarLocalPath=req.files?.avatar?.[0]?.path
+    console.log("path available",avatarLocalPath);
+    const coverImageLocalPath=req.files?.coverImage?.[0]?.path
     if(!avatarLocalPath){
         throw new ApiError(400,"Avatar is required");
     }
     const avatar =await fileUpload(avatarLocalPath)
     const coverImage=await fileUpload(coverImageLocalPath)
+    console.log("avatar",avatar);
 
     if(!avatar){
-        throw new ApiError(400,"Avatar is required");
+        throw new ApiError(400,"Avatar is required cloud");
     }
     const user=await User.create({
         fullName,
