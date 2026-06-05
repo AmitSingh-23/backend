@@ -22,7 +22,8 @@ import fs from 'fs';
         resource_type: "auto" 
     });
 
-    console.log("file uploaded",response.url);
+    // for testimng console.log("file uploaded",response.url);
+    fs.unlinkSync(filepath);//unlink
     return response;/// return the url and stuff store it into a cosnt ot later connect
     }
  catch(error){

@@ -4,10 +4,13 @@ import {ApiError} from '../utlis/ApiError.js';//class
  import {fileUpload} from '../utlis/cloudinary.js'
  import {ApiResponse} from '../utlis/apiResponse.js';
 const registerUser=asyncHandler(async(req,res)=>{
-    
+  
     const{fullName,email,username,password}=req.body
     const fields = [fullName, email, username, password];
-    if (fields.some((field) => !field || field.trim() === "")) {
+   
+    const hasEmpty = fields.some((field) => !field || field.trim() === "");
+    console.log("hasEmpty:", hasEmpty);
+    if (hasEmpty) {
         throw new ApiError(400, "All fields are required");
     }  
 
@@ -27,7 +30,7 @@ const registerUser=asyncHandler(async(req,res)=>{
     }
     const avatar =await fileUpload(avatarLocalPath)
     const coverImage=await fileUpload(coverImageLocalPath)
-    console.log("avatar",avatar);
+   
 
     if(!avatar){
         throw new ApiError(400,"Avatar is required cloud");
