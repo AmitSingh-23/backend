@@ -19,7 +19,7 @@ const registerUser=asyncHandler(async(req,res)=>{
     if(existingUser){
         throw new ApiError(409,"User already exist");
     }
-    const avatarLocalPath=req.files?.avatar[0]?.path
+    const avatarLocalPath=req.files?.avatar[0].path
     const coverImageLocalPath=req.files?.coverImage[0]?.path
     if(!avatarLocalPath){
         throw new ApiError(400,"Avatar is required");
@@ -38,8 +38,8 @@ const registerUser=asyncHandler(async(req,res)=>{
         avatar:avatar.url,
         coverImage:coverImage?.url||"",
     })
-    const createrdUserUser=await findById(user._id).select(
-        "-password", "-refreshToken"  //what do we dont need
+    const createdUser=await User.findById(user._id).select(
+        "-password -refreshToken"  //what do we dont need
     )
     if(!createdUser){
         throw new ApiError(500,"User not created");
@@ -47,6 +47,7 @@ const registerUser=asyncHandler(async(req,res)=>{
     }
     return res.status(201).json(
         new ApiResponse({
+            
             success:true,
             message:"User created successfully",
             data:createdUser,
