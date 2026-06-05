@@ -45,7 +45,7 @@ const userSchema = new mongoose.Schema({
         required:[true,"Password is reuired"],
 
     },
-    refreshtoken:{
+    refreshToken:{
         typr:string,
     }
 },{timestamps:true});
@@ -62,4 +62,4 @@ user.schema.methods.isPassword=async function(password){
 }
 
 
-export const user=mongoose.model("usser",userSchema);
+export const User=mongoose.model("User",userSchema);

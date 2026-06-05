@@ -1,4 +1,4 @@
-class APITResponse {
+class ApiResponse {
     constuctor(statusCode, sucess, data,message="success"){ 
         this.statusCode = statusCode;
         this.success = statusCode<400;
@@ -7,3 +7,4 @@ class APITResponse {
     }
 
 }
+export {ApiResponse};

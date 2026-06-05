@@ -8,7 +8,7 @@ import fs from 'fs';
  });
 
 
- const fileupload=async(filepath)=>{
+ const fileUpload=async(filepath)=>{
     try{
     if (!filepath) return NULL;
     const response=await coudinary.uploader.upload(filepath,{
@@ -16,7 +16,7 @@ import fs from 'fs';
     });
 
     console.log("file uploaded",response.url);
-    return response;
+    return response;/// return the url and stuff store it into a cosnt ot later connect
     }
  catch(error){
     fs.unlinkSync(filepath);
@@ -24,4 +24,6 @@ import fs from 'fs';
 
  }
 }
+
+ export {fileUpload};
  
