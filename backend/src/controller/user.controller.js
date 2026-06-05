@@ -39,7 +39,7 @@ const registerUser=asyncHandler(async(req,res)=>{
         coverImage:coverImage?.url||"",
     })
     const createrdUserUser=await findById(user._id).select(
-        "-password -refreshToken"  //what do we dont need
+        "-password", "-refreshToken"  //what do we dont need
     )
     if(!createdUser){
         throw new ApiError(500,"User not created");
