@@ -1,10 +1,11 @@
-import { SchemaType } from "mongoose";
+import mongoose from "mongoose";
 import bycrypt from "bcrypt";
 import { jwtDecode } from "jwt-decode";
-import mongoose from mongoose;
+import { Schema } from "mongoose";
+
 const userSchema = new mongoose.Schema({
     username:{
-        type:string,
+        type:String,
         required:true,
         unique:true,
         trim:true,
@@ -12,7 +13,7 @@ const userSchema = new mongoose.Schema({
         index:true
     },
     email:{
-        type:string,
+        type:String,
         required:true,
         unique:true,
         trim:true,
@@ -20,17 +21,17 @@ const userSchema = new mongoose.Schema({
       
     },
     fullname:{
-        type:string,
+        type:String,
         required:true,
         trim:true,
     
     },
     avatar:{
-        type: string,
+        type: String,
         required:true,   
     },
     coverImage:{
-        type:string,
+        type:String,
         
     },
     watchHistory:[
@@ -41,23 +42,23 @@ const userSchema = new mongoose.Schema({
         }
     ],
     password:{
-        type:string,
+        type:String,
         required:[true,"Password is reuired"],
 
     },
     refreshToken:{
-        typr:string,
+        typr:String,
     }
 },{timestamps:true});
 
-userschema.pre("save",async function(next){
+userSchema.pre("save",async function(next){
     if(!this.isModified("password")) return next;
     this.password=await bycrypt.hash(this.password,10)
     next();
 })
 
 
-user.schema.methods.isPassword=async function(password){
+userSchema.methods.isPassword=async function(password){
     return await bycrypt.compare(password,this.password);
 }
 

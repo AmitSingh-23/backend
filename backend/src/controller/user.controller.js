@@ -1,6 +1,6 @@
 import asyncHandler from '../utlis/AsyncHandler.js';//function
-import ApiError from '../utlis/ApiError.js';//class 
- import User from '../model/user.model.js'
+import {ApiError} from '../utlis/ApiError.js';//class 
+ import {User} from '../model/user.model.js'
  import {fileUpload} from '../utlis/cloudinary.js'
  import {ApiResponse} from '../utlis/apiResponse.js';
 const registerUser=asyncHandler(async(req,res)=>{
