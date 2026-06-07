@@ -1,13 +1,13 @@
-import { jwtDecode } from "jwt-decode";
-import asyncHandler from "../utlis/AsyncHandler";
-import { User } from "../model/user.model";
-import { ApiError } from "../utlis/ApiError";
+import jwtDecode from "jsonwebtoken";
+import asyncHandler from "../utlis/asyncHandler.js";
+import { User } from "../model/user.model.js";
+import { ApiError } from "../utlis/ApiError.js";
 
 
 const authenticateUser=asyncHandler(async(req,res,next)=>
 {
    try {
-     const token=req.cookies?.accessToken|| req.header("Authorization")?.replace("Bearer","")
+     const token=req.cookies?.accessToken|| req.header("Authorization")?.replace("Bearer ","").trim()
     if(!token){
         throw new Error(401,"User Not Found no token");
     }

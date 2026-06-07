@@ -19,6 +19,6 @@ router.route("/register").post(
 )
 router.route("/login").post(loginUser);
 // secure
-router.route("/logoutUser").post(authenticateUser,logoutUser)
+router.route("/logout").post(authenticateUser,logoutUser)
 
 export default router;
