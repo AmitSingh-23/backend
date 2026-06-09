@@ -3,10 +3,8 @@ import {ApiError} from '../utlis/ApiError.js';//class
  import {User} from '../model/user.model.js'
  import {fileUpload} from '../utlis/cloudinary.js'
  import {ApiResponse} from '../utlis/apiResponse.js';
+ import jwt from 'jsonwebtoken';
  
-
-
-
 const  generateRefereshAndAccesstoken=async (userId)=>{
 try{
     const user=await User.findById(userId);
@@ -20,8 +18,6 @@ try{
         throw new ApiError(500,"Something went wrong in generating toke ");
     }
 }
-
-
 
 const registerUser=asyncHandler(async(req,res)=>{
   
@@ -76,7 +72,6 @@ const registerUser=asyncHandler(async(req,res)=>{
 
 
 })
-
 
 const loginUser=asyncHandler(async(req,res)=>{
     const {email,username,password}=req.body
@@ -133,8 +128,114 @@ const logoutUser=asyncHandler(async(req,res)=>{
       )
 })
 
+const refreshAccessToken=asyncHandler(async(req,res)=>{
+    const incomingrefreshToken=req.cookies?.refreshToken;
+    if(!incomingrefreshToken){
+        throw new ApiError(400,"unauthorised request");
+    }
+    const decoded=jwt.verify(
+        incomingrefreshToken,
+        process.env.REFRESH_TOKEN_SECRET,
+
+    )
+    const user=User.findById(decoded?._id)
+    if(!user){
+        throw new ApiError(404,"invali refreh token");
+    }
+    if(incomingrefreshToken!=user?.refreshToken){
+        throw new ApiError(400,"unauthorised request doesnt match");
+    }
+
+    const {accessToken,newrefreshToken}=await generateRefereshAndAccesstoken(user._id);
+    const options={
+        httpOnly:true,
+        secure:true,
+      }  
+      return res.status(200).cookie("accessToken",accessToken,options).cookie("refreshToken",newrefreshToken,options).json(
+        new ApiResponse(200, {accessToken}, "accesstoekn refresh")
+      )
+
+
+})
+
+const changeCurrentPassword=asyncHandler(async(req,res)=>{
+    const{oldPassword,newPassword}=req.body
+    if(!oldPassword||!newPassword){
+        throw new ApiError(400,"All fields are required");
+    }
+    const user=await User.findById(req.user?._id);
+    const isValidPassword=await user.isPassword(oldPassword);
+    if(!isValidPassword){
+        throw new ApiError(401,"this is not your old password");
+    }
+   user.password=newPassword;
+   await  user.save({validateBeforeSave:false});
+   return res.status(200).json(
+    new ApiResponse(200, {}, "Password changed successfully this is your new passwords "+newPassword)
+   )
+
+
+})
+
+const getCurrentUser=asyncHandler(async(req,res)=>{
+    return res.status(200).json(
+        new ApiResponse(200, req.user, "User found")
+    )
+})
+const updateAccountDetails=asyncHandler(async(req,res)=>{
+    const {fullName,email}=req.body;
+    if(!fullName||!email){
+        throw new ApiError(400,"All fields are required ");
+        
+    }
+    const user=req.user;
+    user.fullName=fullName;
+    user.email=email;
+    await user.save({validateBeforeSave:false});
+    return res.status(200).json(
+        new ApiResponse(200, user, "User updated successfully")
+    )})
+
+const updateUserAvatar=asyncHandler(async(req,res)=>{
+    const avatarPath=req.file?.path;
+    if(!avatarPath){
+        throw new ApiError(400,"Avatar is required is missing");
+    }
+    const user=req.user;
+    const avatarUrl=await fileUpload(avatarPath);
+    if(!avatarUrl){
+        throw new ApiError(500,"Something went wrong in uploading avatar");
+    }
+    user.avatar=avatarUrl.url;
+    await user.save({validateBeforeSave:false});
+    return res.status(200).json(
+        new ApiResponse(200, user, "Avatar updated successfully")
+    )
+    })
+    
+const updateUsercoverImage=asyncHandler(async(req,res)=>{
+    const coverImagePath=req.file?.path;
+    if(!coverImagePath){
+        throw new ApiError(400,"coverImage is required is missing");
+    }
+    const user=req.user;
+    const coverImageUrl=await fileUpload(coverImagePath);
+    if(!coverImageUrl){
+        throw new ApiError(500,"Something went wrong in uploading coverImage");
+    }
+    user.avatar=avatarUrl.url;
+    await user.save({validateBeforeSave:false});
+    return res.status(200).json(
+        new ApiResponse(200, user, "Avatar updated successfully")
+    )
+    })
+
 export {
     registerUser,
     loginUser,
-    logoutUser
+    logoutUser,
+    refreshAccessToken,
+    changeCurrentPassword,
+    getCurrentUser,
+    updateAccountDetails
 } 
